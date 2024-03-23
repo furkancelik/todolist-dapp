@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.trash {
+    display: none;
+}
+
+.item:hover {
+
+.trash {display: block;}
+}
