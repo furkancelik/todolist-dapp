@@ -40,20 +40,8 @@ export const EthereumProvider = ({ children }) => {
   const { showModal } = useModal();
 
   useEffect(() => {
-    connectWalletCC();
+    connectWallet();
   }, []);
-
-  const dispatchAccount = (accounts, dispatch) => {
-    let account;
-    if (accounts.length !== 0) {
-      // const shard = quais.utils.getShardFromAddress(accounts[0]);
-      setUserAddress(accounts[0]);
-    } else {
-      account = undefined;
-      dispatch({ type: "SET_ACCOUNT", payload: account });
-    }
-    return account;
-  };
 
   const connectWalletCC = async () => {
     try {
