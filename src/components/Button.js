@@ -11,7 +11,7 @@ export default function Button({
   children,
 }) {
   const { userAddress, provider, signer } = useEthereum();
-  console.log(condition);
+
   return (
     <button
       disabled={disabled}

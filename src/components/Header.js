@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Button from "./Button";
 import { useEthereum } from "../context/EthereumContext";
+import { useModal } from "@/context/ModalContext";
 
 export default function Header() {
   const {
@@ -11,10 +12,12 @@ export default function Header() {
     signer,
     contract,
     changeNetwork,
+    balance,
   } = useEthereum();
-  const [showModal, setShowModal] = useState(false);
+
   const [chainId, setChainId] = useState(null);
-  const modalRef = useRef(null);
+
+  const { showModal, hideModal } = useModal();
 
   useEffect(() => {
     getCurrentNetwork();
@@ -22,43 +25,15 @@ export default function Header() {
 
   const getCurrentNetwork = async () => {
     try {
-      // Mevcut ağın chain ID'sini al
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
       setChainId(chainId);
-      // Chain ID'ye göre ağ bilgisini döndür
-      // switch (chainId) {
-      //   case "0x1":
-      //     console.log("This is the Ethereum Main Network.");
-      //     break;
-      //   case "0x3":
-      //     console.log("This is the Ropsten Test Network.");
-      //     break;
-      //   case "0x4":
-      //     console.log("This is the Rinkeby Test Network.");
-      //     break;
-      //   case "0x5":
-      //     console.log("This is the Goerli Test Network.");
-      //     break;
-      //   case "0x2a":
-      //     console.log("This is the Kovan Test Network.");
-      //     break;
-      //   case "0xaa36a7":
-      //     console.log("This is the Sepoli Test Network.");
-      //     break;
-      //   case "0x539":
-      //     console.log("This is the TODOAPP Test Network.");
-      //     break;
-      //   default:
-      //     console.log("This is an unknown network.");
-      // }
     } catch (error) {
-      console.error("Error:", error);
+      alert(`An unexpected error occurred! \n ${error}`);
       return null;
     }
   };
 
   function renderChainId() {
-    // Chain ID'ye göre ağ bilgisini döndür
     switch (chainId) {
       case process.env.DEFAULT_NETWORK:
         return <div>Sepoli ETH</div>;
@@ -67,9 +42,54 @@ export default function Header() {
     }
   }
 
-  return (
-    <>
-      <div className="absolute right-4 top-3 flex pt-2">
+  function renderNetwork() {
+    if (process.env.DEFAULT_WALLET === "Pelagus") {
+      return (
+        <Button
+          onClick={() => {
+            showModal({
+              title: "Faucet",
+              content: () => (
+                <div className="text-center pt-4">
+                  <div className="pb-4">
+                    You must have enough QUAI in your wallet to trade on the
+                    QUAI network.
+                    <br />
+                    You can use{" "}
+                    <a
+                      className="text-sky-700 font-semibold hover:text-sky-500"
+                      target="_blank"
+                      href="https://faucet.quai.network/"
+                    >
+                      Faucet
+                    </a>{" "}
+                    to request QUAI or you can <br />
+                    request QUAI from administrators on our{" "}
+                    <a
+                      className="text-sky-700 font-semibold hover:text-sky-500"
+                      target="_blank"
+                      href="https://discord.gg/ph8HMWsH"
+                    >
+                      Discord
+                    </a>{" "}
+                    channel.
+                  </div>
+                  <hr />
+                  <div className="pt-4 text-gray-600">
+                    Please make sure that you make transactions <br />
+                    on the cyprus-1 network and on the corresponding wallet.
+                  </div>
+                </div>
+              ),
+            });
+          }}
+          className={`p-2 pr-4 text-white font-bold mr-2 inline-flex`}
+        >
+          Faucet
+        </Button>
+      );
+    } else {
+      return (
         <Button
           onClick={() => {
             if (chainId !== process.env.DEFAULT_NETWORK) {
@@ -82,7 +102,6 @@ export default function Header() {
               ? "text-sky-600"
               : "text-red-600"
           } font-bold mr-4 inline-flex `}
-          // className={"text-white font-bold mr-4  px-6  "}
         >
           {chainId === process.env.DEFAULT_NETWORK ? (
             <svg
@@ -105,11 +124,66 @@ export default function Header() {
           )}
           {renderChainId()}
         </Button>
+      );
+    }
+  }
+
+  return (
+    <>
+      <div className="absolute right-4 top-3 flex pt-2">
+        {renderNetwork()}
 
         {userAddress ? (
           <Button
             onClick={() => {
-              setShowModal(true);
+              showModal({
+                title: "Wallet Settings",
+                content: () => (
+                  <>
+                    <div className="py-4">
+                      <div className="flex flex-col items-center">
+                        <div className="mb-4 flex w-[64px] h-[64px] bg-yellow-400 items-center justify-center rounded-full text-4xl">
+                          🤑
+                        </div>
+                        <div className="text-lg font-semibold">{`${userAddress.slice(
+                          0,
+                          7
+                        )}....${userAddress.slice(
+                          userAddress.length - 5,
+                          userAddress.length
+                        )}`}</div>
+                        <span>{parseFloat(balance).toFixed(2)} Q</span>
+                      </div>
+                    </div>
+                    <hr className="mb-3" />
+                    <Button
+                      onClick={() => {
+                        disconnectWallet();
+                        hideModal();
+                      }}
+                      className={
+                        "text-red-600 flex bg-gray-100 w-full font-semibold justify-center p-3 hover:bg-red-200"
+                      }
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-6 h-6 mr-1"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                        />
+                      </svg>{" "}
+                      Disconnect Connection
+                    </Button>
+                  </>
+                ),
+              });
             }}
             className={"p-2 px-6 rounded-lg bg-white text-sky-600 font-bold "}
           >
@@ -127,85 +201,6 @@ export default function Header() {
           </Button>
         )}
       </div>
-
-      {showModal && (
-        <div
-          ref={modalRef}
-          onClick={(e) => {
-            if (modalRef.current === e.target) {
-              setShowModal(false);
-            }
-          }}
-          className="bg-black/80 w-full h-full absolute z-10 flex items-center justify-center"
-        >
-          <div className="bg-white p-5  rounded-2xl min-w-96 xs:min-w-[100%]">
-            <div className="flex justify-between">
-              <h2 className=" text-xl font-bold">Cüzdan Ayarları</h2>
-              <button
-                onClick={() => {
-                  setShowModal(false);
-                }}
-                className="w-[35px] h-[35px] bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 cursor-pointer"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-[20px] h-[20px]"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18 18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div className="py-4">
-              <div className="flex flex-col items-center">
-                <div className="mb-4 flex w-[64px] h-[64px] bg-yellow-400 items-center justify-center rounded-full text-4xl">
-                  🤑
-                </div>
-                <div className="text-lg font-semibold">{`${userAddress.slice(
-                  0,
-                  7
-                )}....${userAddress.slice(
-                  userAddress.length - 5,
-                  userAddress.length
-                )}`}</div>
-              </div>
-            </div>
-            <hr className="mb-3" />
-            <Button
-              onClick={() => {
-                disconnectWallet();
-                setShowModal(false);
-              }}
-              className={
-                "text-red-600 flex bg-gray-100 w-full font-semibold justify-center p-3 hover:bg-red-200"
-              }
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-6 h-6 mr-1"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-                />
-              </svg>{" "}
-              Bağlantıyı Kes
-            </Button>
-          </div>
-        </div>
-      )}
     </>
   );
 }

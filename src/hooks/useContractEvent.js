@@ -5,23 +5,18 @@ const useContractEvent = (eventName, handleEvent) => {
   const { contract } = useEthereum();
 
   useEffect(() => {
-    if (!contract) return; // Eğer contract nesnesi yoksa, hook'u çalıştırma
+    if (!contract) return;
 
-    // EventListener fonksiyonu, olay tetiklendiğinde çağrılacak
     const eventListener = (...args) => {
-      handleEvent(...args); // handleEvent, tetiklenen olaya yanıt olarak dışarıdan sağlanan işlevdir
+      handleEvent(...args);
     };
 
-    // Belirtilen olay için dinleyici ekleyin
     contract.on(eventName, eventListener);
 
-    // Component temizlenirken (yani, unmount olurken), olay dinleyicisini kaldırın
     return () => {
       contract.off(eventName, eventListener);
     };
-  }, [contract, eventName]); // useEffect'in bağımlılıkları
-
-  // Bu hook, dışa dönük bir değer döndürmüyor; sadece yan etkiler (etkileşimler) için kullanılıyor
+  }, [contract, eventName]);
 };
 
 export default useContractEvent;

@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   env: {
     DEFAULT_NETWORK: "0xaa36a7",
+    DEFAULT_WALLET: "Pelagus",
 
     // # Sepolia Testnet
     networkParams: {

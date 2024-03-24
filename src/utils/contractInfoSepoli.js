@@ -1,8 +1,5 @@
-// 1 -- Deploy transaction broadcasted: 0x30eae9026da0bc9dc2b9131501252713b25af870cdffe55d95c518f3937a8fe2
-// 2 -- Waiting for transaction to be mined.
-// 3 -- Transaction mined. ERC20 deployed to: 0x07Db3E6668690cFFD9231505Ed92f3b9e5fB62E8
-//   -- Gas used: 604443
-export const contractAddress = "0x07Db3E6668690cFFD9231505Ed92f3b9e5fB62E8";
+export const contractAddress = "0x1132e127eA13a1B679FDEC2E0DfF61CBBCf06CdF";
+// export const contractAddress = "0x32D99caEbaf5eBA340fe8447d8e8f1BD4BfFEc06";
 
 export const contractABI = [
   {
@@ -125,6 +122,19 @@ export const contractABI = [
         type: "uint256",
       },
     ],
+    name: "toggleCompleted",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_taskId",
+        type: "uint256",
+      },
+    ],
     name: "getTask",
     outputs: [
       {
@@ -164,19 +174,6 @@ export const contractABI = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_taskId",
-        type: "uint256",
-      },
-    ],
-    name: "toggleCompleted",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
 ];

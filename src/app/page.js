@@ -21,7 +21,6 @@ export default function Home() {
 
   useEffect(() => {
     if (userAddress) {
-      console.log("Connected:", userAddress);
       fetchTasks();
     }
   }, [userAddress]);
@@ -36,9 +35,7 @@ export default function Home() {
 
   useContractEvent("TaskStatusToggled", (user, taskId, completed) => {
     if (user.toLowerCase() === userAddress.toLowerCase()) {
-      console.log("OKKKK");
       setTasks((prevState) => {
-        console.log("prevState:", prevState);
         return prevState.map((item, index) => {
           if (parseInt(index) == parseInt(taskId)) {
             return { ...item, content: item.content, completed };
@@ -61,28 +58,6 @@ export default function Home() {
       });
     }
   });
-
-  // useEffect(() => {
-  //   const onToggleCompleted = (user, taskId, completed) => {
-  //     if (user.toLowerCase() === userAddress.toLowerCase()) {
-  //       console.log("DDDDDDDDDDDD");
-  //       // setCreateLoading(false);
-  //       // setContent("");
-  //       // setTasks((prevState) => [...prevState, { content, completed }]);
-  //     }
-  //   };
-
-  //   if (contract) {
-  //     contract.on("TaskCreated", onTaskCreated);
-  //     contract.on("TaskStatusToggled", onToggleCompleted);
-  //   }
-  //   return () => {
-  //     if (contract) {
-  //       return contract.off("TaskCreated", onTaskCreated);
-  //     }
-  //     return null;
-  //   };
-  // }, [contract]);
 
   async function fetchTasks() {
     if (!contract) return;
@@ -121,7 +96,7 @@ export default function Home() {
                 condition={showComplatedTask === true}
                 size={"xs"}
               >
-                Yapılacaklar
+                To do
               </Button>
               <Button
                 disabled={userAddress === ""}
@@ -131,7 +106,7 @@ export default function Home() {
                 condition={showComplatedTask === false}
                 size={"xs"}
               >
-                Tamamlananlar
+                Completed
               </Button>
               <Button
                 disabled={userAddress === ""}
@@ -142,7 +117,7 @@ export default function Home() {
                 condition={showComplatedTask === "all"}
                 size={"xs"}
               >
-                Tümü
+                All
               </Button>
             </div>
           </div>
@@ -150,9 +125,6 @@ export default function Home() {
           <div className="flex flex-col pt-3 pb-2 flex-1 overflow-scroll">
             {userAddress !== "" ? (
               tasks?.map((item, index) => {
-                // if (showComplatedTask === "all") return true;
-                // return item.completed === showComplatedTask;
-
                 return (
                   <Item
                     hidden={item.completed === showComplatedTask}
@@ -166,18 +138,24 @@ export default function Home() {
                 );
               })
             ) : (
-              // Array(3)
-              //   .fill(null)
-              //   .map((v, index) => {
-              //     return (
-              //       <Item complated={false} key={index}>
-              //         In publishing and Tüm hakkı saklıdır
-              //         {index}
-              //       </Item>
-              //     );
-              //   })
-              <div className="flex flex-1 items-center justify-center">
-                İşlem yapabilmek için cüzdanınızı bağlamalısınız.
+              <div className="flex flex-1 items-center justify-center flex-col text-lg text-center">
+                <div className="pb-8">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-32 h-32 text-gray-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                    />
+                  </svg>
+                </div>
+                You must connect <br /> your wallet to make transactions.
               </div>
             )}
           </div>
@@ -190,7 +168,7 @@ export default function Home() {
                   value={content}
                   className="border-2 p-2 flex-1 rounded-md mr-2 disabled:opacity-40 disabled:cursor-no-drop"
                   type="text"
-                  placeholder="Görevler"
+                  placeholder="Write any task"
                   onChange={(e) => {
                     setContent(e.target.value);
                   }}
@@ -202,7 +180,7 @@ export default function Home() {
                   }}
                   className={"bg-sky-500 text-white px-6  text-center"}
                 >
-                  {createLoading ? <Loading /> : "Kaydet"}
+                  {createLoading ? <Loading /> : "Save"}
                 </Button>
               </>
             ) : (
@@ -245,58 +223,5 @@ export default function Home() {
         </div>
       </div>
     </>
-  );
-
-  return (
-    <div>
-      {userAddress ? (
-        userAddress
-      ) : (
-        <button onClick={connectWalletHandler}>Connect Wallet</button>
-      )}
-      <hr />
-      <input
-        value={content}
-        type="text"
-        onChange={(e) => {
-          setContent(e.target.value);
-        }}
-      />
-      <button
-        onClick={() => {
-          createTask(content);
-        }}
-      >
-        Kaydet
-      </button>
-      <hr />
-      Görevler
-      {tasks === null && <div>Yükleniyor...</div>}
-      <ul>
-        {tasks?.map((item, index) => (
-          <li key={index}>
-            {item.content} - {item.completed ? "Yapıldı" : "Beklemede"}
-          </li>
-        ))}
-      </ul>
-      <div>
-        <input
-          value={taskId}
-          type="text"
-          onChange={(e) => {
-            setTaskId(e.target.value);
-          }}
-        />
-        <button
-          onClick={async () => {
-            const contractWithSigner = contract.connect(signer);
-            const task = await contractWithSigner.getTask(0);
-            console.log("task--->", task);
-          }}
-        >
-          Getir
-        </button>
-      </div>
-    </div>
   );
 }

@@ -34,13 +34,11 @@ export default function CheckBox({ taskId, activeValue, setTasks }) {
   return (
     <div
       onClick={() => {
-        if (
-          confirm(
-            `Görevi ${
-              value ? "bekleyen görevler arasına almak" : "tamamlamak"
-            } istediğinize eminmisiniz?`
-          )
-        ) {
+        const message = value
+          ? "Are you sure you want to put the task on the to-do list?"
+          : "Are you sure you want to complete the task?";
+
+        if (confirm(message)) {
           // setValue(!value);
           setLoading(true);
           toggleCompleted(taskId);
