@@ -40,6 +40,7 @@ export const EthereumProvider = ({ children }) => {
   const { showModal } = useModal();
 
   useEffect(() => {
+    // https://rpc.cyprus1.colosseum.quaiscan.io/
     connectWallet();
   }, []);
 
@@ -72,12 +73,8 @@ export const EthereumProvider = ({ children }) => {
       );
       setContract(contract);
 
-      console.log("CContract:", contract);
-
       const contractWithSigner = contract.connect(signer);
-      console.log("-->AAA:", await contractWithSigner.getTasks());
     } catch (e) {
-      console.log(e);
       showModal({
         title: "Connect to ToDo List",
         content: () => (

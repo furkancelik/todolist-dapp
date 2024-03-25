@@ -7,6 +7,9 @@ import Item from "@/components/Item";
 import Button from "@/components/Button";
 import Loading from "@/components/Loading";
 import useContractEvent from "@/hooks/useContractEvent";
+import usePollFor from "@/hooks/usePollFor";
+// const { pollFor } = require("quais-polling");
+// const quais = require("quais");
 
 export default function Home() {
   const { userAddress, provider, signer, contract, connectWallet } =
@@ -18,6 +21,7 @@ export default function Home() {
   const [content, setContent] = useState("");
   const [taskId, setTaskId] = useState("");
   const [createLoading, setCreateLoading] = useState(false);
+  const { pollFor } = usePollFor();
 
   useEffect(() => {
     if (userAddress) {
@@ -71,6 +75,21 @@ export default function Home() {
     try {
       const contractWithSigner = contract.connect(signer);
       const tx = await contractWithSigner.createTask(content);
+      await pollFor(
+        tx.hash,
+        () => {
+          setCreateLoading(false);
+          setContent("");
+          setTasks((prevState) => [
+            ...prevState,
+            { content, completed: false },
+          ]);
+        },
+        () => {
+          alert(`An unexpected error occurred!`);
+          setCreateLoading(false);
+        }
+      );
       await tx.wait();
     } catch (e) {
       setCreateLoading(false);
@@ -174,7 +193,7 @@ export default function Home() {
                   }}
                 />{" "}
                 <Button
-                  disabled={createLoading}
+                  disabled={content === "" || createLoading}
                   onClick={() => {
                     createTask(content);
                   }}

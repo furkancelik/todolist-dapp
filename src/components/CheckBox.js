@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useEthereum } from "@/context/EthereumContext";
 import Loading from "./Loading";
 import useContractEvent from "@/hooks/useContractEvent";
+import usePollFor from "@/hooks/usePollFor";
 
 export default function CheckBox({ taskId, activeValue, setTasks }) {
   const [value, setValue] = useState(activeValue);
   const [loading, setLoading] = useState(false);
   const { userAddress, provider, signer, contract } = useEthereum();
   const prevActiveValueRef = useRef();
+  const { pollFor } = usePollFor();
 
   useEffect(() => {
     if (prevActiveValueRef.current !== activeValue && loading) {
@@ -24,6 +26,28 @@ export default function CheckBox({ taskId, activeValue, setTasks }) {
     try {
       const contractWithSigner = contract.connect(signer);
       const tx = await contractWithSigner.toggleCompleted(taskId);
+      await pollFor(
+        tx.hash,
+        () => {
+          setLoading(false);
+          setTasks((prevState) => {
+            return prevState.map((item, index) => {
+              if (parseInt(index) == parseInt(taskId)) {
+                return {
+                  ...item,
+                  content: item.content,
+                  completed: !item.completed,
+                };
+              }
+              return item;
+            });
+          });
+        },
+        () => {
+          alert(`An unexpected error occurred!`);
+          setCreateLoading(false);
+        }
+      );
       await tx.wait();
     } catch (e) {
       setLoading(false);

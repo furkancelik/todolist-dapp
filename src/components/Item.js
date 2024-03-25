@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import CheckBox from "./CheckBox";
 import Loading from "./Loading";
 import { useEthereum } from "@/context/EthereumContext";
+import usePollFor from "@/hooks/usePollFor";
 
 export default function Item({
   children,
@@ -15,6 +16,7 @@ export default function Item({
   const [loading, setLoading] = useState(false);
   const { userAddress, provider, signer, contract } = useEthereum();
   const prevCildrenRef = useRef();
+  const { pollFor } = usePollFor();
 
   useEffect(() => {
     if (prevCildrenRef.current !== children && loading) {
@@ -31,6 +33,27 @@ export default function Item({
     try {
       const contractWithSigner = contract.connect(signer);
       const tx = await contractWithSigner.editContent(taskId, content);
+
+      await pollFor(
+        tx.hash,
+        () => {
+          setLoading(false);
+          setEdit(false);
+          setTasks((prevState) => {
+            return prevState.map((item, index) => {
+              if (parseInt(index) == parseInt(taskId)) {
+                return { ...item, completed: item.completed, content: value };
+              }
+              return item;
+            });
+          });
+        },
+        () => {
+          alert(`An unexpected error occurred!`);
+          setCreateLoading(false);
+        }
+      );
+
       await tx.wait();
     } catch (e) {
       setLoading(false);
