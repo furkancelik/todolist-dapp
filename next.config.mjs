@@ -2,37 +2,27 @@
 const nextConfig = {
   reactStrictMode: false,
   env: {
-    DEFAULT_NETWORK: "0xaa36a7",
-    DEFAULT_WALLET: "Pelagus",
+    DEFAULT_WALLET: "Pelagus", // Pelagus || Metamask
+    DEFAULT_NETWORK: "0xaa36a7", // ETH
 
     // # Sepolia Testnet
-    networkParams: {
-      chainId: "0xaa36a7", // Ropsten test ağının chain ID'si
-      chainName: "Sepolia",
-      nativeCurrency: {
-        name: "Ether",
-        symbol: "ETH",
-        decimals: 18,
-      },
-      rpcUrls: ["https://eth-sepolia.g.alchemy.com/v2/demo"],
-      blockExplorerUrls: [""],
-    },
+    "networkParams.chainId": "0xaa36a7",
+    "networkParams.chainName": "Sepolia",
+    "networkParams.nativeCurrency.name": "Ether",
+    "networkParams.nativeCurrency.symbol": "ETH",
+    "networkParams.nativeCurrency.decimals": "18",
+    "networkParams.rpcUrls": "https://eth-sepolia.g.alchemy.com/v2/demo",
+    "networkParams.blockExplorerUrls": "",
 
     // # Localhost
-    // networkParams: {
-    //   chainId: "0x539", // Ropsten test ağının chain ID'si
-    //   chainName: "TodoApp Test",
-    //   nativeCurrency: {
-    //     name: "Ether",
-    //     symbol: "ETH",
-    //     decimals: 18,
-    //   },
-    //   rpcUrls: ["HTTP://127.0.0.1:7545"],
-    //   blockExplorerUrls: [""],
-    // },
+    // "networkParams.chainId": "0x539",
+    // "networkParams.chainName": "TodoApp Test",
+    // "networkParams.nativeCurrency.name": "Ether",
+    // "networkParams.nativeCurrency.symbol": "ETH",
+    // "networkParams.nativeCurrency.decimals": "18",
+    // "networkParams.rpcUrls": "HTTP://127.0.0.1:7545",
+    // "networkParams.blockExplorerUrls": "",
   },
 };
-
-// 0x539;
 
 export default nextConfig;

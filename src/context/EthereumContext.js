@@ -220,7 +220,19 @@ export const EthereumProvider = ({ children }) => {
     setContract(null);
   };
 
-  const changeNetwork = async (networkParams = process.env.networkParams) => {
+  const changeNetwork = async (
+    networkParams = {
+      chainId: process.env.networkParams.chainId,
+      chainName: process.env.networkParams.chainName,
+      nativeCurrency: {
+        name: process.env.networkParams.nativeCurrency.name,
+        symbol: process.env.networkParams.nativeCurrency.symbol,
+        decimals: parseInt(process.env.networkParams.nativeCurrency.decimals),
+      },
+      rpcUrls: [process.env.networkParams.rpcUrls],
+      blockExplorerUrls: [process.env.networkParams.blockExplorerUrls],
+    }
+  ) => {
     try {
       // MetaMask'ta ağ değiştirmeyi dene
       await window.ethereum.request({

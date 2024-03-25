@@ -1,3 +1,6 @@
+"use client";
+"use client";
+
 import { useState, useRef, useEffect } from "react";
 import Button from "./Button";
 import { useEthereum } from "../context/EthereumContext";
@@ -21,7 +24,7 @@ export default function Header() {
 
   useEffect(() => {
     getCurrentNetwork();
-  }, [provider, window, window.ethereum]);
+  }, [provider]); // [provider, window, window.ethereum]);
 
   const getCurrentNetwork = async () => {
     try {
