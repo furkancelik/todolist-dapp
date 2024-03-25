@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# To Do List Dapp For QUAI
 
-## Getting Started
+To see the live preview and test the dapp;
 
-First, run the development server:
+[https://todolistquai.netlify.app/
+](https://todolistquai.netlify.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+![To Do Dapp Preview](https://raw.githubusercontent.com/furkancelik/todolist-dapp/quai/public/preview.png)
+
+This is a decentralized application (dApp) built on the Quai blockchain, utilizing smart contracts to manage a to-do list. Users can add, complete, and view tasks securely and transparently on the blockchain. The dApp integrates with the Pelagus Wallet, allowing users to interact with the blockchain easily.
+
+## Features
+
+- **Create Tasks:** Users can add new tasks to their to-do list.
+- **Complete Tasks:** Users can mark tasks as completed.
+- **View Tasks:** Users can view their list of tasks, both pending and completed.
+
+## Requirements
+
+- [Node.js](https://nodejs.org/)
+- [Pelagus Wallet](https://pelaguswallet.io/) browser extension
+- [Quai Network](https://qu.ai/) access for testing on Quai testnet
+
+## Installation
+
+1. Clone the repository:
+
+```
+git clone https://github.com/furkancelik/todolist-dapp.git
+cd todolist-dapp
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Running the dApp
 
-## Learn More
+1. Start the local development server:
 
-To learn more about Next.js, take a look at the following resources:
+```
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Open your web browser and connect your Pelagus Wallet.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Interact with the dApp through the web interface.
